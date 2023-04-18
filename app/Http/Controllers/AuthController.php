@@ -63,14 +63,19 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        foreach ($request->reseaux_sociaux as $reseau){
-            $reseaux[] = $reseau;
+        /*$reseaux = null;
+        if (isset($request->reseaux_sociaux)) {
+            foreach ($request->reseaux_sociaux as $reseau){
+                $reseaux[] = $reseau;
+            }
         }
 
-        foreach ($request->pieces_jointes as $piece){
-            $pieces[] = $piece;
-        }
+        $pieces = null;
+        if(isset($request->pieces_jointes )){
+            foreach ($request->pieces_jointes as $piece){
+                $pieces[] = $piece;
+            }
+        }*/
 
         $user = User::create([
             'complete_name' => $request->complete_name,
@@ -90,9 +95,9 @@ class AuthController extends Controller
             'niveau_etude_cdt' => $request->niveau_etude_cdt,
             'domaine_etude_cdt' => $request->domaine_etude_cdt,
             'realisations' => $request->realisations,
-            'reseaux_sociaux' => $reseaux,
+            'reseaux_sociaux' => $request->reseaux_sociaux,
             'role' => $request->role,
-            'pieces_jointes' => $pieces,
+            'pieces_jointes' => $request->pieces_jointes,
         ]);
 
         return response()->json(['user' => $user], 201);
