@@ -166,10 +166,10 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $authUser = Auth::user();
             $success['token'] = $authUser->createToken('MyAuthApp')->plainTextToken;
-            $success['name'] = $authUser->name;
+            $success['name'] = $authUser->complete_name;
 
             return response()->json([
-                "message" => "User signed in " + $success,
+                "message" => "User signed in ".$success['name']." ".$success['token'],
             ], 200);
         }
         else {

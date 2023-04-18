@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('user', AuthController::class);
+Route::post('signin', [AuthController::class, 'signin']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Routes protégées
