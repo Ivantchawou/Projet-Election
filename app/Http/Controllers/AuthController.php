@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class AuthController extends Controller
@@ -84,10 +85,33 @@ class AuthController extends Controller
         //
     }
 
-    public function signin(Request $request){
+    public function signin(Request $request)
+    {
 
-        $validator = Validators::make($request->all(), [
-
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => "Information invalide ou manquante",
+            ], 401);
+        }
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $authUser = Auth::user();
+            $success['token'] = $authUser->createToken('MyAuthApp')->plainTextToken;
+            $success['name'] = $authUser->name;
+
+            return response()->json([
+                "message" => "User signed in " + $success,
+            ], 200);
+        }
+        else {
+            return response()->json([
+                "error" => "Authentication failed user unauthorises",
+            ]);
+        }
     }
 }
