@@ -15,10 +15,29 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('complete_name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('identification_number')->unique();
             $table->string('password');
+            $table->integer('age');
+            $table->string('citoyennete');
+            $table->string('telephone');
+            $table->text('residence');
+            $table->enum('language', ['en', 'fr', 'other'])->default('fr');
+            $table->string('photo')->nullable();
+            $table->string('poste_presente_cdt')->nullable();
+            $table->string('nom_parti_politique_cdt')->nullable();
+            $table->text('exp_politique_cdt')->nullable();
+            $table->text('exp_pro_cdt')->nullable();
+            $table->string('niveau_etude_cdt')->nullable();
+            $table->string('domaine_etude_cdt')->nullable();
+            $table->text('realisations')->nullable();
+            $table->json('reseaux_sociaux')->nullable();
+            $table->boolean('isConfirm')->default(false);
+            $table->boolean('isActivated')->default(true);
+            $table->enum('role', ['candidat', 'admin', 'organisateur','electeur'])->default('electeur');
+            $table->json('pieces_jointes');
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
