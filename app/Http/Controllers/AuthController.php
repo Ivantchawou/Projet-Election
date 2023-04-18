@@ -55,15 +55,15 @@ class AuthController extends Controller
             'niveau_etude_cdt' => 'nullable|string|max:255',
             'domaine_etude_cdt' => 'nullable|string|max:255',
             'realisations' => 'nullable|string',
-            'reseaux_sociaux' => 'nullable|json',
-            'pieces_jointes' => 'nullable|json',
+            'reseaux_sociaux' => 'nullable|array',
+            'pieces_jointes' => 'nullable|array',
             'role' => 'required|string|in:candidat,admin,organisateur,electeur'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        /*$reseaux = null;
+        $reseaux = null;
         if (isset($request->reseaux_sociaux)) {
             foreach ($request->reseaux_sociaux as $reseau){
                 $reseaux[] = $reseau;
@@ -75,7 +75,7 @@ class AuthController extends Controller
             foreach ($request->pieces_jointes as $piece){
                 $pieces[] = $piece;
             }
-        }*/
+        }
 
         $user = User::create([
             'complete_name' => $request->complete_name,
@@ -95,9 +95,9 @@ class AuthController extends Controller
             'niveau_etude_cdt' => $request->niveau_etude_cdt,
             'domaine_etude_cdt' => $request->domaine_etude_cdt,
             'realisations' => $request->realisations,
-            'reseaux_sociaux' => $request->reseaux_sociaux,
+            'reseaux_sociaux' => json_encode($request->reseaux_sociaux),
             'role' => $request->role,
-            'pieces_jointes' => $request->pieces_jointes,
+            'pieces_jointes' => json_encode($request->pieces_jointes),
         ]);
 
         return response()->json(['user' => $user], 201);
