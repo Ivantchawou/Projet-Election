@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use Hash;
 
 class AuthController extends Controller
 {
@@ -37,7 +38,70 @@ class AuthController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'complete_name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users|max:255',
+            'identification_number' => 'required|string|unique:users|max:255',
+            'password' => 'required|string|min:8|max:255',
+            'age' => 'required|integer|min:18',
+            'citoyennete' => 'required|string|max:255',
+            'telephone' => 'required|string|max:255',
+            'residence' => 'required|string',
+            'language' => 'required|string|in:en,fr,other',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'poste_presente_cdt' => 'nullable|string|max:255',
+            'nom_parti_politique_cdt' => 'nullable|string|max:255',
+            'exp_politique_cdt' => 'nullable|string',
+            'exp_pro_cdt' => 'nullable|string',
+            'niveau_etude_cdt' => 'nullable|string|max:255',
+            'domaine_etude_cdt' => 'nullable|string|max:255',
+            'realisations' => 'nullable|string',
+            'reseaux_sociaux' => 'nullable|json',
+            'pieces_jointes' => 'nullable|json',
+            'role' => 'required|string|in:candidat,admin,organisateur,electeur'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        /*$reseaux = null;
+        if (isset($request->reseaux_sociaux)) {
+            foreach ($request->reseaux_sociaux as $reseau){
+                $reseaux[] = $reseau;
+            }
+        }
+
+        $pieces = null;
+        if(isset($request->pieces_jointes )){
+            foreach ($request->pieces_jointes as $piece){
+                $pieces[] = $piece;
+            }
+        }*/
+
+        $user = User::create([
+            'complete_name' => $request->complete_name,
+            'email' => $request->email,
+            'identification_number' => $request->identification_number,
+            'password' => Hash::make($request->password),
+            'age' => $request->age,
+            'citoyennete' => $request->citoyennete,
+            'telephone' => $request->telephone,
+            'residence' => $request->residence,
+            'language' => $request->language,
+            'photo' => $request->hasFile('photo') ? $request->file('photo')->store('photos') : null,
+            'poste_presente_cdt' => $request->poste_presente_cdt,
+            'nom_parti_politique_cdt' => $request->nom_parti_politique_cdt,
+            'exp_politique_cdt' => $request->exp_politique_cdt,
+            'exp_pro_cdt' => $request->exp_pro_cdt,
+            'niveau_etude_cdt' => $request->niveau_etude_cdt,
+            'domaine_etude_cdt' => $request->domaine_etude_cdt,
+            'realisations' => $request->realisations,
+            'reseaux_sociaux' => $request->reseaux_sociaux,
+            'role' => $request->role,
+            'pieces_jointes' => $request->pieces_jointes,
+        ]);
+
+        return response()->json(['user' => $user], 201);
     }
 
     /**
