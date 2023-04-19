@@ -153,36 +153,33 @@ class AuthController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'email' => 'required',
-            'password' => 'required',
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:8|max:255',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                "message" => "Information invalide ou manquante",
-            ], 401);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $authUser = Auth::user();
             $success['token'] = $authUser->createToken('MyAuthApp')->plainTextToken;
             $success['name'] = $authUser->complete_name;
-            $success['role'] =   ($authUser->isAdmin() ? "admin" : $authUser->isCandidat())?"candidat":
-                                 ($authUser->isOrganisateur() ? "organisation" : $authUser->isElecteur());
-            
-            $success['role'] = $success['role'] ? "electeur" : "aucun cas";
+            $success['role'] =   $authUser->isElecteur() ? "electeur" :
+                                 ($authUser->isCandidat() ? "candidat":
+                                 ($authUser->isOrganisateur() ? "organisation" :
+                                 "admin"));
 
-            
-           // dd($success['role']);
 
             return response()->json([
-                "message" => "User signed in ".$success['name']." ". $success['role']." ".$success['token'],
+                "message" => "User signed in ",
+                "username"=>$success['name'],
+                "role"=>$success['role'],
+                "token"=>$success['token'],
             ], 200);
         }
         else {
-            return response()->json([
-                "error" => "Authentication failed user unauthorises",
-            ]);
+            return response()->json(['error' => 'Invalid credentials'], 401);
         }
     }
 }
