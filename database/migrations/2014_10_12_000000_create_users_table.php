@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer('age');
             $table->string('citoyennete');
-            $table->string('telephone');
+            $table->string('telephone')->unique();
             $table->text('residence');
             $table->enum('language', ['en', 'fr', 'other'])->default('fr');
             $table->string('photo')->nullable();
