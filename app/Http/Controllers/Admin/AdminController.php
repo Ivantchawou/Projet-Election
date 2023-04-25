@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Validator;
+
+
 
 class AdminController extends Controller
 {
@@ -81,5 +85,67 @@ class AdminController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function validationSimple(Request $request)
+    {
+        if (isset($request->id)) {
+            $message = $this->appelValidation($request->id);
+            if ($message === true) {
+                return response()->json([
+                    "message" => "modification effectuer"
+                ], 201);
+            } else {
+                return response()->json([
+                    "message" => "modification non effectuer un des users n'existe pas"
+                ], 404);
+            }
+        } else {
+            return response()->json([
+                "Error"
+            ], 404);
+        }
+    }
+
+    private function appelValidation(int $id)
+    {
+        $isvalide = false;
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            $isvalide = false;
+            return $isvalide;
+        } else {
+            $isvalide = true;
+            $user->estValide();
+        }
+        return $isvalide;
+    }
+
+    public function validationMultiple(Request $request)
+    {
+        $tableId = $request->tableId;
+
+        if (isset($request->tableId)) {
+            foreach ($tableId as $id) {
+                $message = $this->appelValidation($id);
+            }
+        } else {
+
+            
+            return response()->json([
+                "message" => "Error tableId is required"
+            ], 404);
+        }
+
+        if ($message === true) {
+            return response()->json([
+                "message" => "modification effectuer"
+            ], 201);
+        } else {
+            return response()->json([
+                "message" => "modification non effectuer un des users n'existe pas"
+            ], 404);
+        }
     }
 }

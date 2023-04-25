@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\AdminController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,6 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('user', AuthController::class);
 Route::post('signin', [AuthController::class, 'signin']);
 Route::post('check_email',[AuthController::class,'check_email'])->name('check_email');
+Route::post('validationSimple',[AdminController::class, 'validationSimple'])->name('validationSimple');
+Route::post('validationMultiple', [AdminController::class,'validationMultiple'])->name('validationMultiple');
 
 Route::middleware('auth:sanctum')->group(function () {
     // Routes protégées

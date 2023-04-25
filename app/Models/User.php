@@ -85,4 +85,8 @@ class User extends Authenticatable
     {
         return $this->role === 'electeur';
     }
+
+    public function estValide(){
+        $this->isActivated = true;
+    }
 }
