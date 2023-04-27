@@ -26,9 +26,13 @@ Route::post('register', [AuthController::class, 'store']);
 //Utils
 Route::post('check_email',[AuthController::class,'check_email']);
 
+//organisateurs
 Route::resource('vote', VoteController::class);
+
+//electeurs
 Route::resource('user', AuthController::class);
 Route::post('filter_votes/{statut?}/{user_id?}',[VoteController::class,'index']);
+
 Route::middleware('auth:sanctum')->group(function () {
     // Routes protégées
 
