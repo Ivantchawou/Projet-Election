@@ -20,7 +20,7 @@ class AuthController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -154,7 +154,7 @@ class AuthController extends Controller
         //
     }
 
-    public function signin(Request $request)
+    public function login(Request $request): \Illuminate\Http\JsonResponse
     {
 
         $validator = Validator::make($request->all(), [
