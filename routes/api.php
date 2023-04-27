@@ -14,15 +14,22 @@ use App\Http\Controllers\Admin\VoteController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//Protéger les routes avec l'authentification Sanctum
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+//Authentification
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'store']);
+
+//Utils
+Route::post('check_email',[AuthController::class,'check_email']);
+
 Route::resource('vote', VoteController::class);
 Route::resource('user', AuthController::class);
-Route::post('signin', [AuthController::class, 'signin']);
-Route::post('check_email',[AuthController::class,'check_email'])->name('check_email');
-
+Route::post('filter_votes/{statut?}',[VoteController::class,'index']);
 Route::middleware('auth:sanctum')->group(function () {
     // Routes protégées
+
 });

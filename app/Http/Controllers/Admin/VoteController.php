@@ -13,13 +13,36 @@ class VoteController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     *Filtres sur les votes selon le critere statut
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
+        $votes = [];
+        $message = '';
+        if (isset($request->statut)){
+            switch ($request->statut){
+                case ('plan'):
+                    $votes = Vote::where('statut','=','plan')->get();
+                    $message = 'Votes plannifiés ';
+                    break;
+                case ('pending'):
+                    $votes = Vote::where('statut','=','pending')->get();
+                    $message = 'Votes en Cours ';
+                    break;
+                case('complete'):
+                    $votes = Vote::where('statut','=','complete')->get();
+                    $message = 'Votes Terminés ';
+                    break;
+                default:
+                    break;
+            }
+            return response()->json([
+                'message' => $message,
+                'data' => $votes]);
+        }
         $votes = Vote::all();
-        return response()->json(['data' => $votes]);
+        return response()->json( $votes);
     }
 
     /**
@@ -41,7 +64,7 @@ class VoteController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:255|unique:Votes',
             'description' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
@@ -101,8 +124,8 @@ class VoteController extends Controller
         if (!$vot) {
             return response()->json(['error' => 'Vote not found'], 404);
         }
-
-        $validator = Validator::make($request->all(), [
+        
+            $validator = Validator::make($request->all(), [
             'title' => 'string|max:255',
             'description' => 'string',
             'start_date' => 'date',
