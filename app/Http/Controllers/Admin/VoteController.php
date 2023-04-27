@@ -20,18 +20,74 @@ class VoteController extends Controller
     {
         $votes = [];
         $message = '';
-        if (isset($request->statut)){
+        if (isset($request->statut) && !isset($request->user_id)){
             switch ($request->statut){
                 case ('plan'):
-                    $votes = Vote::where('statut','=','plan')->get();
+                    $votes = Vote::where('statut','=','plan')
+                        ->get();
                     $message = 'Votes plannifiés ';
                     break;
                 case ('pending'):
-                    $votes = Vote::where('statut','=','pending')->get();
+                    $votes = Vote::where('statut','=','pending')
+                        ->get();
                     $message = 'Votes en Cours ';
                     break;
                 case('complete'):
-                    $votes = Vote::where('statut','=','complete')->get();
+                    $votes = Vote::where('statut','=','complete')
+                        ->get();
+                    $message = 'Votes Terminés ';
+                    break;
+                default:
+                    break;
+            }
+            return response()->json([
+                'message' => $message,
+                'data' => $votes]);
+        }elseif (isset($request->user_id) && !isset($request->statut)){
+            switch ($request->statut){
+                case ('plan'):
+                    $votes = Vote::where('statut','=','plan')
+                        ->where('user_id',Auth::user()->id)
+                        ->get();
+                    $message = 'Votes plannifiés ';
+                    break;
+                case ('pending'):
+                    $votes = Vote::where('statut','=','pending')
+                        ->where('user_id',Auth::user()->id)
+                        ->get();
+                    $message = 'Votes en Cours ';
+                    break;
+                case('complete'):
+                    $votes = Vote::where('statut','=','complete')
+                        ->where('user_id',Auth::user()->id)
+                        ->get();
+                    $message = 'Votes Terminés ';
+                    break;
+                default:
+                    break;
+            }
+            return response()->json([
+                'message' => $message,
+                'data' => $votes]);
+        }
+        elseif (isset($request->user_id) && isset($request->statut)){
+            switch ($request->statut){
+                case ('plan'):
+                    $votes = Vote::where('statut','=','plan')
+                        ->where('user_id',intval($request->user_id))
+                        ->get();
+                    $message = 'Votes plannifiés ';
+                    break;
+                case ('pending'):
+                    $votes = Vote::where('statut','=','pending')
+                        ->where('user_id',intval($request->user_id))
+                        ->get();
+                    $message = 'Votes en Cours ';
+                    break;
+                case('complete'):
+                    $votes = Vote::where('statut','=','complete')
+                        ->where('user_id',intval($request->user_id))
+                        ->get();
                     $message = 'Votes Terminés ';
                     break;
                 default:
@@ -124,7 +180,7 @@ class VoteController extends Controller
         if (!$vot) {
             return response()->json(['error' => 'Vote not found'], 404);
         }
-        
+
             $validator = Validator::make($request->all(), [
             'title' => 'string|max:255',
             'description' => 'string',

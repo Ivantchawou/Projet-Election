@@ -28,7 +28,7 @@ Route::post('check_email',[AuthController::class,'check_email']);
 
 Route::resource('vote', VoteController::class);
 Route::resource('user', AuthController::class);
-Route::post('filter_votes/{statut?}',[VoteController::class,'index']);
+Route::post('filter_votes/{statut?}/{user_id?}',[VoteController::class,'index']);
 Route::middleware('auth:sanctum')->group(function () {
     // Routes protégées
 
