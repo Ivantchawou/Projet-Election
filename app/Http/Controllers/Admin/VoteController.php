@@ -21,6 +21,7 @@ class VoteController extends Controller
         $votes = [];
         $message = '';
         if (isset($request->statut) && !isset($request->user_id)){
+            //l'electeur filtre sur toutes les requetes
             switch ($request->statut){
                 case ('plan'):
                     $votes = Vote::where('statut','=','plan')
@@ -34,32 +35,6 @@ class VoteController extends Controller
                     break;
                 case('complete'):
                     $votes = Vote::where('statut','=','complete')
-                        ->get();
-                    $message = 'Votes Terminés ';
-                    break;
-                default:
-                    break;
-            }
-            return response()->json([
-                'message' => $message,
-                'data' => $votes]);
-        }elseif (isset($request->user_id) && !isset($request->statut)){
-            switch ($request->statut){
-                case ('plan'):
-                    $votes = Vote::where('statut','=','plan')
-                        ->where('user_id',Auth::user()->id)
-                        ->get();
-                    $message = 'Votes plannifiés ';
-                    break;
-                case ('pending'):
-                    $votes = Vote::where('statut','=','pending')
-                        ->where('user_id',Auth::user()->id)
-                        ->get();
-                    $message = 'Votes en Cours ';
-                    break;
-                case('complete'):
-                    $votes = Vote::where('statut','=','complete')
-                        ->where('user_id',Auth::user()->id)
                         ->get();
                     $message = 'Votes Terminés ';
                     break;
@@ -70,23 +45,24 @@ class VoteController extends Controller
                 'message' => $message,
                 'data' => $votes]);
         }
-        elseif (isset($request->user_id) && isset($request->statut)){
+        elseif (isset($request->user_id) && !isset($request->statut)){
+            //l'organisteur filtre sur ses votes
             switch ($request->statut){
                 case ('plan'):
                     $votes = Vote::where('statut','=','plan')
-                        ->where('user_id',intval($request->user_id))
+                        ->where('user_id',Auth::user()->id)
                         ->get();
                     $message = 'Votes plannifiés ';
                     break;
                 case ('pending'):
                     $votes = Vote::where('statut','=','pending')
-                        ->where('user_id',intval($request->user_id))
+                        ->where('user_id',Auth::user()->id)
                         ->get();
                     $message = 'Votes en Cours ';
                     break;
                 case('complete'):
                     $votes = Vote::where('statut','=','complete')
-                        ->where('user_id',intval($request->user_id))
+                        ->where('user_id',Auth::user()->id)
                         ->get();
                     $message = 'Votes Terminés ';
                     break;
