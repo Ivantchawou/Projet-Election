@@ -36,7 +36,7 @@ return new class extends Migration
             $table->boolean('isConfirm')->default(false);
             $table->boolean('isActivated')->default(true);
             $table->enum('role', ['candidat', 'admin', 'organisateur','electeur'])->default('electeur');
-            $table->json('pieces_jointes');
+            $table->json('pieces_jointes')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

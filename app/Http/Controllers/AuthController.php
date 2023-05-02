@@ -18,9 +18,14 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        $organisateurs =  NULL;
+        if(isset($request->role) && $request->role === 'candidat'){
+            $organisateurs = User::where('role','=','candidat')->get();
+            return response()->json($organisateurs);
+        }
+        return response()->json([]);
     }
 
     /**
