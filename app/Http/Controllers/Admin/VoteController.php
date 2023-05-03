@@ -113,7 +113,7 @@ class VoteController extends Controller
         $vote->user_id = Auth::id();
         $vote->save();
 
-        return response()->json(['data' => $vote], 201);
+        return response()->json( $vote->id, 201);
     }
 
     /**
