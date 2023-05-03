@@ -74,7 +74,10 @@ class VoteController extends Controller
                 'data' => $votes]);
         }
         $votes = Vote::all();
-        return response()->json( $votes);
+        return response()->json([
+            'message' => $message,
+            'data' => $votes
+        ]);
     }
 
     /**
