@@ -42,7 +42,7 @@ class VoteController extends Controller
                     break;
             }
             return response()->json([
-                'message' => $message,
+                'messages' => $message,
                 'data' => $votes]);
         }
         elseif (isset($request->user_id) && !isset($request->statut)){
@@ -73,8 +73,12 @@ class VoteController extends Controller
                 'message' => $message,
                 'data' => $votes]);
         }
+
         $votes = Vote::all();
-        return response()->json( $votes);
+        return response()->json([
+            'message' => $message,
+            'data' => $votes
+        ]);
     }
 
     /**
