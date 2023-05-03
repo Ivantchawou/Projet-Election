@@ -68,7 +68,7 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->role === 'admin'; 
+        return $this->role === 'admin';
     }
 
     public function isCandidat()
@@ -88,5 +88,16 @@ class User extends Authenticatable
 
     public function estValide(){
         $this->isActivated = true;
+    }
+
+
+    /**
+     * The candidats that belong to the Vote
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function votes(): BelongsToMany
+    {
+        return $this->belongsToMany(Vote::class, 'vote_candidats','user_id', 'vote_id');
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VoteCandidatController;
 use App\Http\Controllers\Admin\VoteController;
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ Route::post('check_email',[AuthController::class,'check_email']);
 
 //organisateurs
 Route::resource('vote', VoteController::class);
+Route::resource('vote_candidat', VoteCandidatController::class);
 Route::post('filter_user/{role?}',[AuthController::class,'index']);
 
 //electeurs
