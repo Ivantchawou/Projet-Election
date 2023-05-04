@@ -30,6 +30,7 @@ Route::post('check_email',[AuthController::class,'check_email']);
 //organisateurs
 Route::resource('vote', VoteController::class);
 Route::resource('vote_candidat', VoteCandidatController::class);
+Route::resource('vote_electeur', VoteCandidatController::class);
 Route::post('filter_user/{role?}',[AuthController::class,'index']);
 
 //electeurs

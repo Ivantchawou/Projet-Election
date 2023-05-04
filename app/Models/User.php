@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -99,5 +101,15 @@ class User extends Authenticatable
     public function votes(): BelongsToMany
     {
         return $this->belongsToMany(Vote::class, 'vote_candidats','user_id', 'vote_id');
+    }
+
+    public function mes_votes(): HasMany
+    {
+        return $this->HasMany(Vote::class);
+    }
+
+    public function vote_electeurs(): BelongsToMany
+    {
+        return $this->belongsToMany(Vote::class, 'vote_electeurs', 'electeur_id','vote_id');
     }
 }
