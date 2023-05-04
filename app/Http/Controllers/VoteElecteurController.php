@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\VoteElecteur;
+use Exception;
 use Illuminate\Http\Request;
 
 class VoteElecteurController extends Controller
