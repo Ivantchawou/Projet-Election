@@ -33,6 +33,7 @@ Route::resource('vote', VoteController::class);
 Route::resource('vote_candidat', VoteCandidatController::class);
 Route::resource('vote_electeur', VoteElecteurController::class);
 Route::post('filter_user/{role?}',[AuthController::class,'index']);
+Route::post('electeur_has_voted',[VoteElecteurController::class,'if_electeur_vote_candidat']);
 
 //electeurs
 Route::resource('user', AuthController::class);

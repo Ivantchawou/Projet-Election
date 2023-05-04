@@ -109,4 +109,18 @@ class VoteElecteurController extends Controller
     {
         //
     }
+
+    public function if_electeur_vote_candidat(Request $request){
+        $vote_id = intval($request->vote_id);
+        $electeur_id = intval($request->electeur_id);
+        $electeur_has_voted = VoteElecteur::where('vote_id','=',$vote_id)
+                                            ->where('electeur_id','=',$electeur_id)
+                                            ->first();
+        if(is_null($electeur_has_voted)){
+            return response()->json(['message' => 'cet utilisateur n\'a pas encore vote'],422);
+
+        }else{
+            return response()->json(['data' => $electeur_has_voted],200);
+        }
+    }
 }
