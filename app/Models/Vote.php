@@ -40,4 +40,15 @@ class Vote extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    /**
+     * The candidats that belong to the Vote
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function candidats(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'vote_candidats', 'vote_id', 'user_id');
+    }
+
 }
