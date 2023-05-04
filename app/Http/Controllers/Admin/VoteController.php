@@ -41,6 +41,9 @@ class VoteController extends Controller
                 default:
                     break;
             }
+            foreach ($votes as $vote){
+                $vote->candidats;
+            }
             return response()->json([
                 'messages' => $message,
                 'data' => $votes]);
@@ -69,12 +72,18 @@ class VoteController extends Controller
                 default:
                     break;
             }
+            foreach ($votes as $vote){
+                $vote->candidats;
+            }
             return response()->json([
                 'message' => $message,
                 'data' => $votes]);
         }
 
         $votes = Vote::all();
+        foreach ($votes as $vote){
+            $vote->candidats;
+        }
         return response()->json([
             'message' => $message,
             'data' => $votes
