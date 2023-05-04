@@ -175,14 +175,16 @@ class AuthController extends Controller
             $authUser = Auth::user();
             $success['token'] = $authUser->createToken('MyAuthApp')->plainTextToken;
             $success['name'] = $authUser->complete_name;
+            $success['id'] = $authUser->id;
             $success['role'] =   $authUser->isElecteur() ? "electeur" :
                                  ($authUser->isCandidat() ? "candidat":
-                                 ($authUser->isOrganisateur() ? "organisation" :
+                                 ($authUser->isOrganisateur() ? "organisateur" :
                                  "admin"));
 
 
             return response()->json([
                 "message" => "User signed in ",
+                "user_id" => $success['id'],
                 "username"=>$success['name'],
                 "role"=>$success['role'],
                 "acces_token"=>$success['token'],
