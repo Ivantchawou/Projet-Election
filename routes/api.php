@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VoteElecteurController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -30,7 +31,7 @@ Route::post('check_email',[AuthController::class,'check_email']);
 //organisateurs
 Route::resource('vote', VoteController::class);
 Route::resource('vote_candidat', VoteCandidatController::class);
-Route::resource('vote_electeur', VoteCandidatController::class);
+Route::resource('vote_electeur', VoteElecteurController::class);
 Route::post('filter_user/{role?}',[AuthController::class,'index']);
 
 //electeurs

@@ -83,7 +83,20 @@ class VoteElecteurController extends Controller
      */
     public function update(Request $request, VoteElecteur $voteElecteur)
     {
-        //
+        try {
+            $vote_election = VoteElecteur::find($voteElecteur->id);
+            if($vote_election->isVoted && isset($request->candidat_id)){
+                $vote_election->candidat_id = intval($request->candidat_id);
+                $vote_election->save();
+                return response()->json(['data' => $vote_election]);
+            }else{
+                return response()->json(['message' => 'Aucun vote déjà effectué ou pas de modification'],422);
+
+            }
+
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 
     /**
