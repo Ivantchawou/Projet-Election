@@ -41,6 +41,9 @@ class VoteController extends Controller
                 default:
                     break;
             }
+            foreach ($votes as $vote){
+                $vote->candidats;
+            }
             return response()->json([
                 'messages' => $message,
                 'data' => $votes]);
@@ -69,12 +72,18 @@ class VoteController extends Controller
                 default:
                     break;
             }
+            foreach ($votes as $vote){
+                $vote->candidats;
+            }
             return response()->json([
                 'message' => $message,
                 'data' => $votes]);
         }
 
         $votes = Vote::all();
+        foreach ($votes as $vote){
+            $vote->candidats;
+        }
         return response()->json([
             'message' => $message,
             'data' => $votes
@@ -107,6 +116,7 @@ class VoteController extends Controller
             'start_hour' => 'required|date_format:H:i',
             'statut'=>'required|string|in:plan,pending,complete',
             'end_hour' => 'required|date_format:H:i|after:start_hour',
+            'user_id' => 'require|exists:users,id'
         ]);
 
         if ($validator->fails()) {
@@ -114,7 +124,7 @@ class VoteController extends Controller
         }
 
         $vote = new Vote($request->all());
-        $vote->user_id = Auth::id();
+        //$vote->user_id = Auth::id();
         $vote->save();
 
         return response()->json( $vote->id, 201);

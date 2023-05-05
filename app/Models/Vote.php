@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Models\User;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Vote extends Model
 {
@@ -36,9 +37,9 @@ class Vote extends Model
         'updated_at',
     ];
 
-    public function users()
+    public function user()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -48,7 +49,13 @@ class Vote extends Model
      */
     public function candidats(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'vote_candidats', 'vote_id', 'user_id');
+        return $this->belongsToMany(User::class, 'vote_candidats', 'vote_id', 'candidat_id');
     }
+
+    public function electeurs(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'vote_electeurs', 'vote_id', 'electeur_id');
+    }
+
 
 }

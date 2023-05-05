@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VoteElecteurController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -24,19 +25,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'store']);
 
-//Utils
-Route::post('check_email',[AuthController::class,'check_email']);
-
-//organisateurs
-Route::resource('vote', VoteController::class);
-Route::resource('vote_candidat', VoteCandidatController::class);
-Route::post('filter_user/{role?}',[AuthController::class,'index']);
-
-//electeurs
-Route::resource('user', AuthController::class);
-Route::post('filter_votes/{statut?}/{user_id?}',[VoteController::class,'index']);
-
 Route::middleware('auth:sanctum')->group(function () {
     // Routes protégées
 
 });
+
+    //Utils
+    Route::post('check_email',[AuthController::class,'check_email']);
+
+    //organisateurs
+    Route::resource('vote', VoteController::class);
+    Route::resource('vote_candidat', VoteCandidatController::class);
+    Route::resource('vote_electeur', VoteElecteurController::class);
+    Route::post('filter_user/{role?}',[AuthController::class,'index']);
+    Route::post('electeur_has_voted',[VoteElecteurController::class,'if_electeur_vote_candidat']);
+
+    //electeurs
+    Route::resource('user', AuthController::class);
+    Route::post('filter_votes/{statut?}/{user_id?}',[VoteController::class,'index']);
+
+
