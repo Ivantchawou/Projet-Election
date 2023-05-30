@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //organisateurs
     Route::resource('vote', VoteController::class);
+    Route::post('create_vote', [VoteController::class, 'store']);
     Route::resource('vote_candidat', VoteCandidatController::class);
     Route::resource('vote_electeur', VoteElecteurController::class);
     Route::post('filter_user/{role?}',[AuthController::class,'index']);

@@ -109,14 +109,14 @@ class VoteController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255|unique:Votes',
+            'title' => 'required|string|max:255|unique:votes',
             'description' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'start_hour' => 'required|date_format:H:i',
             'statut'=>'required|string|in:plan,pending,complete',
             'end_hour' => 'required|date_format:H:i|after:start_hour',
-            'user_id' => 'require|exists:users,id'
+            'user_id' => 'required|exists:users,id'
         ]);
 
         if ($validator->fails()) {
