@@ -139,6 +139,7 @@ class VoteController extends Controller
     public function show(Vote $vote)
     {
         $vot = Vote::find($vote->id);
+        $vot->candidats;
         if (!$vot) {
             return response()->json(['error' => 'Vote not found'], 404);
         }

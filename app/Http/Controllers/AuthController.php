@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\VoteElecteur;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -122,6 +123,14 @@ class AuthController extends Controller
      */
     public function show(User $user)
     {
+        //$participations = $user->vote_electeurs;
+        $votes = VoteElecteur::where('electeur_id', $user->id)
+            ->join('votes', 'vote_electeurs.vote_id', '=', 'votes.id')
+            ->join('users as electeurs', 'vote_electeurs.electeur_id', '=', 'electeurs.id')
+            ->join('users as candidats', 'vote_electeurs.candidat_id', '=', 'candidats.id')
+            ->select('vote_electeurs.id', 'votes.*','electeurs.id as electeur_id', 'electeurs.complete_name as electeur_name', 'candidats.id as candidat_id','candidats.complete_name as candidat_name')
+            ->get();
+        dd($votes);
         return response()->json($user);
     }
 
