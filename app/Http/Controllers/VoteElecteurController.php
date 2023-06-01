@@ -16,6 +16,9 @@ class VoteElecteurController extends Controller
     public function index()
     {
         //
+        $voteElecteur = VoteElecteur::all();
+        return response()->json(
+            $voteElecteur,200);
     }
 
     /**

@@ -130,8 +130,8 @@ class AuthController extends Controller
             ->join('users as candidats', 'vote_electeurs.candidat_id', '=', 'candidats.id')
             ->select('vote_electeurs.id', 'votes.*','electeurs.id as electeur_id', 'electeurs.complete_name as electeur_name', 'candidats.id as candidat_id','candidats.complete_name as candidat_name')
             ->get();
-        dd($votes);
-        return response()->json($user);
+       // dd($votes);
+        return response()->json($votes);
     }
 
     /**
