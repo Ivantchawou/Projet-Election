@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\VoteElecteur;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -17,16 +19,23 @@ class AuthController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $organisateurs =  NULL;
-        if(isset($request->role) && $request->role === 'candidat'){
-            $organisateurs = User::where('role','=','candidat')->get();
-            return response()->json($organisateurs);
+        $users = [];
+        $msg = '';
+        if(isset($request->role)){
+            return match ($request->role) {
+                'organisateur' => response()->json(['users' => User::where('role','organisateur')->get()]),
+                'electeur' => response()->json(['users' => User::where('role','electeur')->get()]),
+                'candidat' => response()->json(['users' => User::where('role','candidat')->get()])
+            };
         }
-        return response()->json([]);
+        $users = User::all();
+        return response()->json([
+            'users' => $users
+        ]);
     }
 
     /**
@@ -119,18 +128,22 @@ class AuthController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function show(User $user)
+    public function show(User $user): JsonResponse
     {
-        //$participations = $user->vote_electeurs;
-        $votes = VoteElecteur::where('electeur_id', $user->id)
-            ->join('votes', 'vote_electeurs.vote_id', '=', 'votes.id')
-            ->join('users as electeurs', 'vote_electeurs.electeur_id', '=', 'electeurs.id')
-            ->join('users as candidats', 'vote_electeurs.candidat_id', '=', 'candidats.id')
-            ->select('vote_electeurs.id', 'votes.*','electeurs.id as electeur_id', 'electeurs.complete_name as electeur_name', 'candidats.id as candidat_id','candidats.complete_name as candidat_name')
+        $votes = DB::table('votes AS v')
+            ->leftJoin('vote_candidats AS vc', 'v.id', '=', 'vc.vote_id')
+            ->leftJoin('vote_electeurs AS ve', 'v.id', '=', 've.vote_id')
+            ->select('v.id AS vote_id', 'v.title', 'v.description',
+                'v.start_date','v.user_id', 'v.end_date', 've.candidat_id',
+                DB::raw('(ve.candidat_id IS NOT NULL AND v.user_id IS NULL) AS is_voted'),
+                DB::raw('(v.user_id IS NOT NULL AND ve.candidat_id IS NULL) AS is_owner'))
+            ->where('v.user_id', $user->id)
+            ->orWhere('ve.electeur_id', $user->id)
+            ->distinct()
             ->get();
-       // dd($votes);
+
         return response()->json($votes);
     }
 
@@ -168,7 +181,7 @@ class AuthController extends Controller
         //
     }
 
-    public function login(Request $request): \Illuminate\Http\JsonResponse
+    public function login(Request $request): JsonResponse
     {
 
         $validator = Validator::make($request->all(), [

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Vote;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,9 +16,9 @@ class VoteController extends Controller
     /**
      * Display a listing of the resource.
      *Filtres sur les votes selon le critere statut
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $votes = [];
         $message = '';
@@ -138,12 +140,32 @@ class VoteController extends Controller
      */
     public function show(Vote $vote)
     {
-        $vot = Vote::find($vote->id);
-        $vot->candidats;
-        if (!$vot) {
-            return response()->json(['error' => 'Vote not found'], 404);
-        }
-        return response()->json(['data' => $vot]);
+        $voteId = $vote->id;
+
+        $electeurs = DB::table('vote_electeurs')
+            ->select('electeur_id')
+            ->where('vote_id', $voteId)
+            ->distinct()
+            ->get();
+        $candidats = DB::table('vote_candidats')
+            ->select('candidat_id')
+            ->where('vote_id', $voteId)
+            ->distinct()
+            ->get();
+
+        $electeursParCandidat = DB::table('vote_electeurs')
+            ->select('candidat_id', DB::raw('COUNT(*) as total'))
+            ->where('vote_id', $voteId)
+            ->groupBy('candidat_id')
+            ->get();
+
+        $response = [
+            'electeurs' => $electeurs,
+            'candidats' => $candidats,
+            'electeursParCandidat' => $electeursParCandidat
+        ];
+
+        return response()->json(['vote' => $response]);
 
     }
 
