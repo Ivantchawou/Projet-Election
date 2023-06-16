@@ -142,14 +142,10 @@ class VoteController extends Controller
     {
         $voteId = $vote->id;
 
-        $electeurs = DB::table('vote_electeurs')
-            ->select('electeur_id')
-            ->where('vote_id', $voteId)
+        $electeurs = $vote->electeurs()
             ->distinct()
             ->get();
-        $candidats = DB::table('vote_candidats')
-            ->select('candidat_id')
-            ->where('vote_id', $voteId)
+        $candidats = $vote->candidats()
             ->distinct()
             ->get();
 
@@ -160,12 +156,13 @@ class VoteController extends Controller
             ->get();
 
         $response = [
+            'vote' => $vote,
             'electeurs' => $electeurs,
             'candidats' => $candidats,
             'electeursParCandidat' => $electeursParCandidat
         ];
 
-        return response()->json(['vote' => $response]);
+        return response()->json( $response);
 
     }
 
